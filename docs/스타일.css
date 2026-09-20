@@ -1,0 +1,109 @@
+/* 생성: 2026-09-20 19:14 (KST) */
+/* 데스크톱 앱과 같은 어두운 분위기로 맞춘다. */
+
+:root {
+  --바탕: #12151d;
+  --판: #1b1f2a;
+  --글자: #e8ebf2;
+  --흐린글자: #98a0b3;
+  --강조: #5aa0ff;
+  --테두리: #2a3040;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 24px 16px 48px;
+  background: var(--바탕);
+  color: var(--글자);
+  font-family: "Malgun Gothic", "맑은 고딕", -apple-system, BlinkMacSystemFont,
+               "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 { font-size: 22px; margin: 0 0 4px; }
+
+.설명 { color: var(--흐린글자); font-size: 14px; margin: 0 0 20px; text-align: center; }
+
+.상태 {
+  color: var(--흐린글자);
+  font-size: 14px;
+  margin-bottom: 12px;
+  min-height: 22px;
+}
+.상태.오류 { color: #ff8a8a; }
+.상태.숨김 { display: none; }
+
+.판 {
+  background: var(--판);
+  border: 1px solid var(--테두리);
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+  max-width: 340px;
+}
+
+#그림판 {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  background: #000;
+  border-radius: 10px;
+  cursor: crosshair;
+  touch-action: none;   /* 손가락으로 그릴 때 화면이 밀리지 않게 */
+}
+
+.단추칸 { display: flex; gap: 10px; margin-top: 12px; }
+
+button {
+  flex: 1;
+  padding: 11px 0;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--글자);
+  background: #2a3040;
+  border: 1px solid var(--테두리);
+  border-radius: 10px;
+  cursor: pointer;
+}
+button:hover:not(:disabled) { background: #333b4e; }
+button:disabled { opacity: 0.45; cursor: default; }
+
+.결과칸 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--테두리);
+}
+
+#결과숫자 { font-size: 52px; font-weight: 700; line-height: 1; min-width: 46px; text-align: center; }
+#결과설명 { color: var(--흐린글자); font-size: 13px; }
+
+#미리보기 {
+  width: 56px;
+  height: 56px;
+  image-rendering: pixelated;   /* 28x28을 또렷한 네모로 확대 */
+  border: 1px solid var(--테두리);
+  border-radius: 6px;
+  background: #000;
+}
+
+.확률줄 { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 13px; }
+.확률숫자 { width: 14px; color: var(--흐린글자); }
+.확률막대 { flex: 1; height: 6px; background: #2a3040; border-radius: 3px; overflow: hidden; }
+.확률막대 i { display: block; height: 100%; background: var(--강조); }
+.확률값 { width: 52px; text-align: right; color: var(--흐린글자); font-variant-numeric: tabular-nums; }
+
+.안내 {
+  max-width: 340px;
+  margin-top: 22px;
+  color: var(--흐린글자);
+  font-size: 13px;
+}
+.안내 a { color: var(--강조); }

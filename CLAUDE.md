@@ -57,6 +57,20 @@ Git Bash에서 한글 출력이 깨지면 `PYTHONIOENCODING=utf-8`을 앞에 붙
 - `create_shortcut.ps1`은 UTF-8 BOM으로 저장해야 한다. PowerShell 5.1은 BOM이 없으면 한글 주석을 ANSI로 읽어 깨뜨린다.
 - 바로가기에 AppUserModelID를 넣는 데 `WScript.Shell`로는 불가능해 `IPropertyStore` COM 인터페이스를 `Add-Type`으로 직접 정의해 쓴다. `propsys.dll`의 `InitPropVariantFromString`은 이 환경에서 내보내지 않으므로 PROPVARIANT를 직접 구성한다.
 
+## 웹 버전 (`docs/`)
+
+`docs/`는 GitHub Pages로 배포되는 웹 앱이며, 같은 모델을 **외부 라이브러리 없이 순수 자바스크립트로** 다시 구현한 것이다. 파이썬 쪽과 다음이 짝을 이룬다.
+
+| 파이썬 | 자바스크립트 |
+|---|---|
+| `model.py`의 `숫자인식CNN` | `docs/모델.js`의 `숫자인식모델` |
+| `draw_app.py`의 `전처리()` | `docs/전처리.js`의 `전처리()` |
+| `draw_app.py`의 그림판 | `docs/그림판.js` |
+
+- 한쪽 구조를 바꾸면 다른 쪽도 함께 고쳐야 한다. `모델.js`의 `층_순서`는 `export_weights.py`의 `층_순서`와 순서가 같아야 한다.
+- 가중치를 재학습했으면 `python export_weights.py`로 `docs/가중치.bin`과 `docs/가중치정보.json`, `docs/검증데이터.json`을 다시 내보내야 한다. 내보내지 않으면 웹 버전만 옛 모델로 동작한다.
+- 전처리의 축소 단계는 파이썬이 PIL LANCZOS, 자바스크립트가 영역 평균이라 화소값이 완전히 같지는 않다. 예측 결과는 일치하는 것으로 확인했다.
+
 ## 검증
 
 테스트 프레임워크가 없다. 변경 후 확인은 다음으로 한다.
@@ -64,8 +78,11 @@ Git Bash에서 한글 출력이 깨지면 `PYTHONIOENCODING=utf-8`을 앞에 붙
 - 학습 관련 변경: `python train.py --에폭 1`로 파이프라인이 도는지 본 뒤, 전체 학습으로 정확도를 기준선과 비교한다.
 - 추론/전처리 변경: 저장된 가중치를 불러와 MNIST 테스트셋을 다시 평가하고, 테스트 이미지를 캔버스 크기(280×280)로 확대해 `전처리()`에 통과시킨 결과도 함께 확인한다.
 - GUI 변경: `창.after()`로 일정 시간 뒤 캡처·종료하는 스크립트를 쓰면 창을 띄우고도 자동으로 검증할 수 있다.
+- 웹 버전 변경: `python -m http.server 8765 --directory docs`로 띄운 뒤 `검증.html`을 연다. PyTorch 출력값과의 최대 오차(1e-3 미만)와 전체 경로 정답률을 자동으로 판정한다. `file://`로 열면 ES 모듈과 fetch가 막히므로 반드시 서버로 연다.
 
 ## 저장소 상태
 
-- git 저장소가 아니다. 초기화한다면 `data/`(torchvision이 내려받는 MNIST 원본 약 64MB), `__pycache__/`, `*.pt`를 제외한다.
+- 원격은 https://github.com/kyssky48/Study01_MNIST (공개). GitHub Pages가 `main` 브랜치의 `docs/` 폴더를 배포한다.
+- `.gitignore`가 `data/`(torchvision이 내려받는 MNIST 원본 약 64MB), `__pycache__/`, `.superpowers/`를 제외한다. `mnist_cnn.pt`와 `docs/가중치.bin`은 일부러 추적한다 — 받는 사람이 학습 없이 바로 쓸 수 있게 하기 위해서다.
+- 사용자 지침상 `main`에 바로 커밋하지 않고 작업 브랜치를 만든다. 커밋과 push는 사용자가 요청할 때만 한다.
 - `requirements.txt`가 없다. 의존성은 `torch`, `torchvision`, `pillow`, `numpy`이며 CPU 휠로 설치돼 있다(`--index-url https://download.pytorch.org/whl/cpu`).
