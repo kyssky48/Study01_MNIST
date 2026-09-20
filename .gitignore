@@ -1,0 +1,9 @@
+# torchvision이 내려받는 MNIST 원본 데이터 (약 64MB, train.py 실행 시 자동 생성)
+data/
+
+# 파이썬 바이트코드 캐시
+__pycache__/
+*.py[cod]
+
+# 개발 도구가 만든 폴더
+.superpowers/
