@@ -129,11 +129,12 @@ class 손글씨_인식_앱:
         self.캔버스.bind("<B1-Motion>", self.끌기)
         self.캔버스.bind("<ButtonRelease-1>", self.뗌)
 
-        self.결과_라벨 = tk.Label(창, text="숫자를 그려 보세요", font=("맑은 고딕", 20))
-        self.결과_라벨.grid(row=1, column=0, columnspan=2)
+        # 인식한 숫자 하나만 큼직하게 보여 준다
+        self.숫자_라벨 = tk.Label(창, text="?", font=("맑은 고딕", 64, "bold"))
+        self.숫자_라벨.grid(row=1, column=0, columnspan=2, pady=(4, 0))
 
-        self.확률_라벨 = tk.Label(창, text="", font=("맑은 고딕", 10), justify="left")
-        self.확률_라벨.grid(row=2, column=0, columnspan=2, padx=10, pady=(0, 6))
+        self.안내_라벨 = tk.Label(창, text="숫자를 그려 보세요", font=("맑은 고딕", 10))
+        self.안내_라벨.grid(row=2, column=0, columnspan=2, padx=10, pady=(0, 6))
 
         tk.Button(창, text="인식", width=12, command=self.인식).grid(
             row=3, column=0, pady=(0, 10))
@@ -169,28 +170,24 @@ class 손글씨_인식_앱:
         self.캔버스.delete("all")
         self.붓.rectangle([0, 0, 캔버스_크기, 캔버스_크기], fill=0)
         self.이전_점 = None
-        self.결과_라벨.config(text="숫자를 그려 보세요")
-        self.확률_라벨.config(text="")
+        self.숫자_라벨.config(text="?")
+        self.안내_라벨.config(text="숫자를 그려 보세요")
 
     def 인식(self):
         입력 = 전처리(self.그림)
         if 입력 is None:
-            self.결과_라벨.config(text="그림이 비어 있습니다")
-            self.확률_라벨.config(text="")
+            self.숫자_라벨.config(text="?")
+            self.안내_라벨.config(text="그림이 비어 있습니다")
             return
 
         with torch.no_grad():
             출력 = self.모델(입력.to(self.장치))
-            확률 = 출력.exp().squeeze(0).cpu().numpy()  # 로그 확률 → 확률
+            로그확률 = 출력.squeeze(0).cpu().numpy()
 
-        예측_숫자 = int(확률.argmax())
-        self.결과_라벨.config(
-            text=f"예측: {예측_숫자}   (확신도 {확률[예측_숫자] * 100:.1f}%)")
-
-        # 확률이 높은 순서대로 3개를 함께 보여 준다
-        상위 = 확률.argsort()[::-1][:3]
-        self.확률_라벨.config(
-            text="  ".join(f"{숫자}: {확률[숫자] * 100:5.1f}%" for 숫자 in 상위))
+        # 가장 확률이 높은 숫자 하나만 보여 준다
+        예측_숫자 = int(로그확률.argmax())
+        self.숫자_라벨.config(text=str(예측_숫자))
+        self.안내_라벨.config(text="")
 
 
 def 작업표시줄_식별자_설정():
