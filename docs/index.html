@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!-- 생성: 2026-09-20 19:14 (KST) -->
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>손글씨 숫자 인식</title>
+  <meta name="description" content="브라우저에서 바로 돌아가는 MNIST 손글씨 숫자 인식. 설치 없이 마우스나 손가락으로 숫자를 그려 보세요.">
+  <link rel="stylesheet" href="스타일.css">
+</head>
+<body>
+  <h1>손글씨 숫자 인식</h1>
+  <p class="설명">마우스나 손가락으로 숫자를 그리면 바로 알아맞힙니다.<br>모든 계산은 브라우저 안에서 이뤄집니다.</p>
+
+  <p id="상태" class="상태">모델을 불러오는 중입니다…</p>
+
+  <div class="판">
+    <canvas id="그림판" width="280" height="280"></canvas>
+
+    <div class="단추칸">
+      <button id="인식단추" disabled>인식</button>
+      <button id="지우기단추" disabled>지우기</button>
+    </div>
+
+    <div class="결과칸">
+      <div id="결과숫자">?</div>
+      <div style="flex:1">
+        <div id="결과설명">모델을 불러오는 중입니다…</div>
+        <div id="확률목록"></div>
+      </div>
+      <canvas id="미리보기" width="28" height="28" title="모델에 들어가는 28x28 이미지"></canvas>
+    </div>
+  </div>
+
+  <p class="안내">
+    숫자를 <strong>크고 두껍게</strong> 그릴수록 잘 맞습니다.
+    오른쪽 작은 그림이 모델에 실제로 들어가는 28×28 이미지입니다.
+    <br><br>
+    PyTorch로 학습한 CNN(테스트 정확도 99.33%)의 가중치를 내려받아
+    자바스크립트로 그대로 계산합니다. 서버로 그림을 보내지 않습니다.
+    <br><br>
+    <a href="검증.html">모델 검증 페이지</a>
+  </p>
+
+  <script type="module" src="앱.js"></script>
+</body>
+</html>
