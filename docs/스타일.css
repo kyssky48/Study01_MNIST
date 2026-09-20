@@ -25,6 +25,15 @@ body {
   align-items: center;
 }
 
+/* 화면 맨 위에 두는 학번·이름 */
+.만든이 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--강조);
+}
+
 h1 { font-size: 22px; margin: 0 0 4px; }
 
 .설명 { color: var(--흐린글자); font-size: 14px; margin: 0 0 20px; text-align: center; }
